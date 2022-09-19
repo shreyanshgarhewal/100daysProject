@@ -7,7 +7,7 @@ GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
 WORK_MIN = 25
-Work_SEC = 0
+WORK_SEC = 0
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 1
@@ -32,7 +32,7 @@ def time_formatter():
 
 
 minutes = WORK_MIN
-seconds = Work_SEC
+seconds = WORK_SEC
 time_0 = f"{minutes}" + ":" + f"{seconds}"
 
 
