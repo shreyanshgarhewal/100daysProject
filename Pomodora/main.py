@@ -10,8 +10,10 @@ WORK_MIN = 25
 WORK_SEC = 0
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-reps = 1
-
+reps = 0
+mark1 = "✔"
+mark2 = "o"
+speed = 1
 # ---------------------------- TIMER RESET ------------------------------- # 
 
 
@@ -40,6 +42,7 @@ def reset_timer():
     global timer, m, s
     m = minutes
     s = seconds
+    check_label["text"] = ""
 
     time_formatter()
     canvas.itemconfig(timer_text, text=timer)
@@ -57,6 +60,11 @@ timer = f"{m}" + ":" + f"{s}"
 def count_down():
     global timer, m, s, reps
 
+    if reps == 7:
+        s = 0
+        m = 0
+        window.after_cancel(count_down)
+
     if s >= 0 & reps < 8:
 
         if s > 0:
@@ -70,20 +78,25 @@ def count_down():
             elif m == 0:
                 reps += 1
                 if reps in [1, 3, 5]:
-                    m = WORK_MIN
-                elif reps in [0, 2, 4]:
+                    check_label["text"] += mark1
                     m = SHORT_BREAK_MIN
+                elif reps in [2, 4]:
+                    check_label["text"] += mark2
+                    m = WORK_MIN
                 elif reps == 6:
+                    check_label["text"] = check_label["text"] + mark2 + mark2
                     m = LONG_BREAK_MIN
-                elif reps == 7:
-                    s = 0
-                    m = 0
 
         time_formatter()
 
-        window.after(1000, count_down)
+        window.after(int(1000/speed), count_down)
         canvas.itemconfig(timer_text, text=timer)
 
+
+def speed_up():
+    global speed
+    speed *= 2
+    speed_button.config(text=f"{speed}x")
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -109,12 +122,16 @@ start_button.config(command=count_down)
 start_button.grid(row=2, column=0)
 
 check_label = Label()
-check_label.config(text="✔", bg=YELLOW, fg=GREEN, font=("Arial", 20, "bold"))
+check_label.config(text=" ", bg=YELLOW, fg=GREEN, font=("Arial", 20, "bold"))
 check_label.grid(row=3, column=1)
 
 reset_button = Button()
 reset_button["text"] = "reset"
 reset_button.config(command=reset_timer)
 reset_button.grid(row=2, column=2)
+
+speed_button = Button()
+speed_button.config(text="1x", font=("Arial", 10, "bold"), command=speed_up)
+speed_button.grid(row=1, column=3)
 
 window.mainloop()
