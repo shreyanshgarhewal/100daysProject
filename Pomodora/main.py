@@ -7,21 +7,17 @@ GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
 WORK_MIN = 25
+Work_SEC = 0
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 1
 
 # ---------------------------- TIMER RESET ------------------------------- # 
-minutes = WORK_MIN
-seconds = 0
-time_0 = f"{minutes}" + ":" + f"{seconds}"
 
 
-def reset_timer():
+def time_formatter():
+    # It will bring the minutes and seconds in the timer in mm:ss format
     global timer, m, s
-    m = minutes
-    s = seconds
-
     if m >= 10:
         if s < 10:
             timer = f"{m}" + ":" + f"0{s}"
@@ -33,6 +29,19 @@ def reset_timer():
 
         else:
             timer = f"0{m}" + ":" + f"{s}"
+
+
+minutes = WORK_MIN
+seconds = Work_SEC
+time_0 = f"{minutes}" + ":" + f"{seconds}"
+
+
+def reset_timer():
+    global timer, m, s
+    m = minutes
+    s = seconds
+
+    time_formatter()
     canvas.itemconfig(timer_text, text=timer)
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
@@ -70,17 +79,7 @@ def count_down():
                     s = 0
                     m = 0
 
-        if m >= 10:
-            if s < 10:
-                timer = f"{m}" + ":" + f"0{s}"
-            else:
-                timer = f"{m}" + ":" + f"{s}"
-
-        else:
-            if s < 10:
-                timer = f"0{m}" + ":" + f"0{s}"
-            else:
-                timer = f"0{m}" + ":" + f"{s}"
+        time_formatter()
 
         window.after(1000, count_down)
         canvas.itemconfig(timer_text, text=timer)
