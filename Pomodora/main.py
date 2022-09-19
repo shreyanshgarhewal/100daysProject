@@ -9,11 +9,11 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-reps = 0
+reps = 1
 
 # ---------------------------- TIMER RESET ------------------------------- # 
-minutes = 00
-seconds = 12
+minutes = WORK_MIN
+seconds = 0
 time_0 = f"{minutes}" + ":" + f"{seconds}"
 
 
@@ -46,30 +46,45 @@ timer = f"{m}" + ":" + f"{s}"
 
 
 def count_down():
-    global timer, m, s
-    if m >= 0 & s >= 0:
+    global timer, m, s, reps
+
+    if s >= 0 & reps < 8:
+
+        if s > 0:
+            s = s - 1
+
+        if s == 0:
+            if m > 0:
+                s = 59
+                m -= 1
+
+            elif m == 0:
+                reps += 1
+                if reps in [1, 3, 5]:
+                    m = WORK_MIN
+                elif reps in [0, 2, 4]:
+                    m = SHORT_BREAK_MIN
+                elif reps == 6:
+                    m = LONG_BREAK_MIN
+                elif reps == 7:
+                    s = 0
+                    m = 0
 
         if m >= 10:
             if s < 10:
                 timer = f"{m}" + ":" + f"0{s}"
             else:
                 timer = f"{m}" + ":" + f"{s}"
+
         else:
             if s < 10:
                 timer = f"0{m}" + ":" + f"0{s}"
-
             else:
                 timer = f"0{m}" + ":" + f"{s}"
 
-        if s == 0:
-            m -= 1
-            s = 59
-
-        s = s - 1
-
-        canvas.itemconfig(timer_text, text=timer)
         window.after(1000, count_down)
-        print(timer)
+        canvas.itemconfig(timer_text, text=timer)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
