@@ -1,9 +1,10 @@
 from tkinter import *
 from tkinter import messagebox
 import passwordgen
-
+import json
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+
 
 def password_generator():
     password_entry.delete(0, END)
@@ -18,6 +19,14 @@ def add_data():
     website_data = website_entry.get()
     username_data = email_entry.get()
     password_data = password_entry.get()
+
+    new_entry = {
+        website_data:
+                    {
+                        "email": username_data,
+                        "password": password_data
+                    }
+    }
 
     if len(website_data) == 0:
         messagebox.showerror(title="Empty entries! ", message="The website data is empty ")
@@ -35,11 +44,16 @@ def add_data():
                                                f" {password_data}\n Click on 'ok' to add the entries in your file")
 
         if is_ok:
-            with open("password_data.txt", mode="a") as data:
-                data_entry = f"{website_data} | {username_data} | {password_data}"
-                data.write(data_entry)
-                data.write("\n")
-                print(website_data, username_data, password_data)
+            with open("password_data.json", mode="r") as data:
+                data_dict = json.load(data)
+                data_dict.update(new_entry)
+
+            with open("password_data.json", mode="w") as data:
+                json.dump(data_dict, data, indent=4)
+                # data_entry = f"{website_data} | {username_data} | {password_data}"
+                # data.write(data_entry)
+                # data.write("\n")
+                messagebox.showinfo(title="Prompt", message="The entry has been added")
                 website_entry.delete(0, END)
                 password_entry.delete(0, END)
 
